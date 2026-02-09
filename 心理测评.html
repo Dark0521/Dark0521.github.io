@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ 心语 · 心理自评</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    /* 基础样式 */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+      color: #1f2937;
+      line-height: 1.6;
+      padding: 16px;
+      min-height: 100vh;
+    }
+    
+    /* 容器 */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(0, 20, 60, 0.12);
+      overflow: hidden;
+    }
+    
+    /* 顶部装饰 */
+    .header {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+      padding: 40px 30px 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* 标签切换 */
+    .scale-tabs {
+      display: flex;
+      gap: 10px;
+      margin: 20px;
+      padding: 8px;
+      background: #f3f4f6;
+      border-radius: 16px;
+    }
+    
+    .scale-tab {
+      flex: 1;
+      padding: 12px 16px;
+      text-align: center;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+      color: #6b7280;
+    }
+    
+    .scale-tab.active {
+      background: white;
+      color: #6366f1;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+    }
+    
+    /* 内容区域 */
+    .content {
+      padding: 25px;
+    }
+    
+    /* 题目样式 */
+    .question {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid #e5e7eb;
+      transition: all 0.2s;
+    }
+    
+    .question:hover {
+      border-color: #d1d5db;
+      transform: translateY(-1px);
+    }
+    
+    .question-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .question-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #6366f1;
+      border-radius: 50%;
+    }
+    
+    .question-text {
+      font-size: 15px;
+      color: #4b5563;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    
+    /* 选项样式 - 优化尺寸 */
+    .options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    
+    @media (max-width: 550px) {
+      .options { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    .option {
+      padding: 10px 6px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 13px;
+      background: white;
+      min-height: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+    
+    .option-value {
+      font-weight: 700;
+      font-size: 18px;
+      color: #6366f1;
+    }
+    
+    .option-text {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.3;
+    }
+    
+    .option:hover {
+      border-color: #a78bfa;
+      background: #f5f3ff;
+    }
+    
+    .option.selected {
+      border-color: #6366f1;
+      background: #eef2ff;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    
+    .option.selected .option-value {
+      color: #4338ca;
+    }
+    
+    /* 进度条 */
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 25px 0;
+    }
+    
+    .progress-text {
+      font-size: 14px;
+      color: #6366f1;
+      font-weight: 600;
+      min-width: 80px;
+    }
+    
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    /* 提交按钮 */
+    .submit-btn {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    
+    .submit-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+    
+    /* 结果区域 */
+    .result {
+      text-align: center;
+      padding: 30px 20px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      margin-top: 20px;
+      border: 1px solid #bae6fd;
+      display: none;
+    }
+    
+    .result.show {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .result-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0c4a6e;
+      margin-bottom: 15px;
+    }
+    
+    .score {
+      font-size: 42px;
+      font-weight: 800;
+      color: #1e40af;
+      margin: 10px 0;
+      line-height: 1;
+    }
+    
+    .level {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 12px 0;
+      color: #1e3a8a;
+    }
+    
+    .suggestion {
+      font-size: 15px;
+      margin: 20px 0;
+      line-height: 1.7;
+      color: #0f172a;
+      padding: 15px;
+      background: white;
+      border-radius: 12px;
+      border-left: 4px solid #6366f1;
+    }
+    
+    .disclaimer {
+      font-size: 13px;
+      color: #4b5563;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px dashed #93c5fd;
+    }
+    
+    /* 返回按钮 */
+    .back-btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 10px 24px;
+      background: white;
+      color: #6366f1;
+      border: 2px solid #6366f1;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .back-btn:hover {
+      background: #6366f1;
+      color: white;
+    }
+    
+    /* 底部 */
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #6b7280;
+      font-size: 13px;
+      padding: 15px;
+      border-top: 1px solid #f3f4f6;
+    }
+    
+    /* 卡片装饰 */
+    .card-deco {
+      position: absolute;
+      opacity: 0.05;
+      z-index: 0;
+    }
+    
+    /* 响应式优化 */
+    @media (max-width: 480px) {
+      .header h1 { font-size: 26px; }
+      .header p { font-size: 14px; }
+      .content { padding: 20px 16px; }
+      .question { padding: 14px; }
+      .question-title { font-size: 15px; }
+      .scale-tabs { margin: 15px; }
+      .option { padding: 8px 4px; min-height: 55px; }
+      .option-value { font-size: 16px; }
+      .option-text { font-size: 11px; }
+      .score { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部 -->
+    <div class="header">
+      <h1>✨ 心语心理自评</h1>
+      <p>专业量表 · 5分钟完成 · 结果实时解读</p>
+    </div>
+
+    <!-- 标签切换 -->
+    <div class="scale-tabs">
+      <div class="scale-tab active" data-scale="phq9">😔 抑郁筛查</div>
+      <div class="scale-tab" data-scale="gad7">😰 焦虑筛查</div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+      <div id="phq9-container">
+        <!-- PHQ-9题目将通过JS动态生成 -->
+      </div>
+      <div id="gad7-container" style="display:none;">
+        <!-- GAD-7题目将通过JS动态生成 -->
+      </div>
+
+      <!-- 进度条 -->
+      <div class="progress">
+        <div class="progress-text" id="progress-text">0/9 已完成</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- 提交按钮 -->
+      <button class="submit-btn" id="submit-btn" disabled>✅ 完成测评，查看结果</button>
+
+      <!-- 结果区域 -->
+      <div class="result" id="result">
+        <div class="result-title">✅ 测评完成</div>
+        <div class="score" id="score-display">--</div>
+        <div class="level" id="level-display">--</div>
+        <div class="suggestion" id="suggestion-display">--</div>
+        <div class="disclaimer">
+          💡 温馨提示：筛查≠诊断，结果需由持证心理咨询师评估
+        </div>
+        <a href="#" class="back-btn" id="back-chat">← 返回聊天继续交流</a>
+      </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      <p>© 2026 高校心理健康中心 · 数据仅用于本次测评，7天后自动清除</p>
+    </div>
+  </div>
+
+  <script>
+    // ========== 量表数据 ==========
+    const PHQ9_QUESTIONS = [
+      "做什么事都提不起兴趣或乐趣？",
+      "感到心情低落、沮丧或绝望？",
+      "入睡困难、睡不安稳或睡太多？",
+      "感觉疲倦或没有活力？",
+      "食欲不振或吃太多？",
+      "觉得自己很糟，或让家人失望？",
+      "注意力难以集中（如看报纸、看电视）？",
+      "动作或说话速度缓慢，或烦躁不安？",
+      "有不如死掉或用某种方式伤害自己的念头？"
+    ];
+
+    const GAD7_QUESTIONS = [
+      "感到紧张、焦虑或烦躁？",
+      "不能停止或控制担忧？",
+      "对很多事情担忧？",
+      "难以放松？",
+      "变得容易烦躁或急躁？",
+      "感到害怕，好像有什么可怕的事情要发生？",
+      "因焦虑而难以静坐？"
+    ];
+
+    // ========== 状态管理 ==========
+    let currentScale = 'phq9';
+    let answers = Array(9).fill(-1);
+    const sessionId = new URLSearchParams(window.location.search).get('session_id') || 'user_' + Date.now();
+
+    // ========== 初始化 ==========
+    function init() {
+      // 1. 绑定量表切换
+      document.querySelectorAll('.scale-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.scale-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          currentScale = tab.dataset.scale;
+          document.getElementById('phq9-container').style.display = currentScale === 'phq9' ? 'block' : 'none';
+          document.getElementById('gad7-container').style.display = currentScale === 'gad7' ? 'block' : 'none';
+          
+          // 重置答案
+          const totalQuestions = currentScale === 'phq9' ? 9 : 7;
+          answers = Array(totalQuestions).fill(-1);
+          updateProgress();
+          document.getElementById('submit-btn').disabled = true;
+          
+          // 重新渲染题目
+          renderQuestions();
+        });
+      });
+      
+      // 2. 渲染初始题目
+      renderQuestions();
+      
+      // 3. 绑定提交按钮
+      document.getElementById('submit-btn').addEventListener('click', submitTest);
+      
+      // 4. 绑定返回聊天
+      document.getElementById('back-chat').addEventListener('click', (e) => {
+        e.preventDefault();
+        const chatUrl = localStorage.getItem('dify_chat_url') || 'https://your-dify-chat.com';
+        window.open(chatUrl, '_blank');
+      });
+    }
+
+    // ========== 渲染题目 ==========
+    function renderQuestions() {
+      const containerId = currentScale === 'phq9' ? 'phq9-container' : 'gad7-container';
+      const questions = currentScale === 'phq9' ? PHQ9_QUESTIONS : GAD7_QUESTIONS;
+      
+      let html = '';
+      questions.forEach((q, i) => {
+        html += `
+          <div class="question">
+            <div class="question-title">第${i+1}题</div>
+            <div class="question-text">${q}</div>
+            <div class="options" id="q${i}">
+              <div class="option" data-value="0">
+                <div class="option-value">0</div>
+                <div class="option-text">完全不会</div>
+              </div>
+              <div class="option" data-value="1">
+                <div class="option-value">1</div>
+                <div class="option-text">几天</div>
+              </div>
+              <div class="option" data-value="2">
+                <div class="option-value">2</div>
+                <div class="option-text">一半以上日子</div>
+              </div>
+              <div class="option" data-value="3">
+                <div class="option-value">3</div>
+                <div class="option-text">几乎每天</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      document.getElementById(containerId).innerHTML = html;
+      
+      // 绑定选项点击
+      questions.forEach((_, i) => {
+        document.querySelectorAll(`#q${i} .option`).forEach(opt => {
+          opt.addEventListener('click', () => {
+            // 取消同题其他选项
+            document.querySelectorAll(`#q${i} .option`).forEach(o => o.classList.remove('selected'));
+            // 选中当前
+            opt.classList.add('selected');
+            answers[i] = parseInt(opt.dataset.value);
+            // 更新进度
+            updateProgress();
+          });
+        });
+      });
+    }
+
+    // ========== 更新进度 ==========
+    function updateProgress() {
+      const total = currentScale === 'phq9' ? 9 : 7;
+      const completed = answers.filter(a => a !== -1).length;
+      const percent = Math.round((completed / total) * 100);
+      
+      document.getElementById('progress-text').textContent = `${completed}/${total} 已完成`;
+      document.getElementById('progress-fill').style.width = `${percent}%`;
+      
+      // 检查是否全部完成
+      document.getElementById('submit-btn').disabled = completed < total;
+    }
+
+    // ========== 提交测评 ==========
+    async function submitTest() {
+      const total = currentScale === 'phq9' ? 9 : 7;
+      const score = answers.slice(0, total).reduce((a, b) => a + b, 0);
+      const scaleName = currentScale === 'phq9' ? 'PHQ-9' : 'GAD-7';
+      
+      // 1. 调用Dify API（替换YOUR_API_KEY为实际值）
+      try {
+        document.getElementById('submit-btn').disabled = true;
+        document.getElementById('submit-btn').textContent = '🔄 正在分析...';
+        
+        const response = await fetch('https://api.dify.ai/v1/chat-messages', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer app-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // ← 替换为您的API Key
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            inputs: {},
+            query: `用户已完成${scaleName}心理测试，量表：${scaleName}，总分：${score}分`,
+            response_mode: "blocking",
+            user: sessionId,
+            conversation_id: sessionId
+          })
+        });
+        
+        const data = await response.json();
+        const aiResponse = data.answer || '分析完成';
+        
+        // 2. 解析AI回复
+        displayResult(score, aiResponse);
+        
+      } catch (error) {
+        console.error('API调用失败:', error);
+        alert('结果分析失败,请重试或返回聊天界面');
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('submit-btn').textContent = '✅ 完成测评,查看结果';
+      }
+    }
+
+    // ========== 显示结果 ==========
+    function displayResult(score, aiResponse) {
+      let level = '', suggestion = '';
+      
+      if (score <= 4) {
+        level = '😊 情绪状态平稳';
+        suggestion = '继续保持规律作息和适度运动就好～';
+      } else if (score <= 9) {
+        level = '🌱 轻度情绪波动';
+        suggestion = '建议每天15分钟户外散步,持续2周无改善可预约咨询';
+      } else if (score <= 14) {
+        level = '💙 中度情绪波动';
+        suggestion = '建议48小时内预约学校心理咨询(链接)';
+      } else {
+        level = '⚠️ 需要专业支持';
+        suggestion = '已通知心理老师,5分钟内会有老师联系你';
+      }
+      
+      // 显示结果
+      document.getElementById('score-display').textContent = `${score}分`;
+      document.getElementById('level-display').textContent = level;
+      document.getElementById('suggestion-display').innerHTML = suggestion + '<br><br>' + 
+        aiResponse.replace(/\n/g, '<br>').replace(/###/g, '');
+      
+      document.getElementById('result').classList.add('show');
+      
+      // 滚动到结果
+      document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ========== 页面加载 ==========
+    window.addEventListener('DOMContentLoaded', () => {
+      const chatUrl = new URLSearchParams(window.location.search).get('chat_url');
+      if (chatUrl) {
+        localStorage.setItem('dify_chat_url', chatUrl);
+        document.getElementById('back-chat').href = chatUrl;
+      }
+      
+      init();
+    });
+  </script>
+</body>
+</html>
