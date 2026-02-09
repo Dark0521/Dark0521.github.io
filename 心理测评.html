@@ -390,7 +390,7 @@
       <!-- 提交按钮 -->
       <button class="submit-btn" id="submit-btn" disabled>✅ 完成测评，查看结果</button>
 
-      <!-- 结果区域 -->
+            <!-- 结果区域 -->
       <div class="result" id="result">
         <div class="result-title">✅ 测评完成</div>
         <div class="score" id="score-display">--</div>
@@ -399,9 +399,13 @@
         <div class="disclaimer">
           💡 温馨提示：筛查≠诊断，结果需由持证心理咨询师评估
         </div>
-        <a href="#" class="back-btn" id="back-chat">← 返回聊天继续交流</a>
+        <a href="javascript:window.close();" class="back-btn">
+          ← 关闭本页面返回聊天
+        </a>
+        <p style="font-size:13px; color:#6b7280; margin-top:10px;">
+          💡 小提示：关闭本页面即可自动回到聊天界面
+        </p>
       </div>
-    </div>
 
     <!-- 底部 -->
     <div class="footer">
@@ -623,3 +627,4 @@
   </script>
 </body>
 </html>
+
