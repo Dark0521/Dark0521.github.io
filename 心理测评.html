@@ -390,7 +390,7 @@
       <!-- 提交按钮 -->
       <button class="submit-btn" id="submit-btn" disabled>✅ 完成测评，查看结果</button>
 
-      <!-- 结果区域 -->
+      <!-- 结果区域（已修改：关闭页面按钮） -->
       <div class="result" id="result">
         <div class="result-title">✅ 测评完成</div>
         <div class="score" id="score-display">--</div>
@@ -399,7 +399,12 @@
         <div class="disclaimer">
           💡 温馨提示：筛查≠诊断，结果需由持证心理咨询师评估
         </div>
-        <a href="#" class="back-btn" id="back-chat">← 返回聊天继续交流</a>
+        <a href="javascript:window.close();" class="back-btn">
+          ← 关闭本页面返回聊天
+        </a>
+        <p style="font-size:13px; color:#6b7280; margin-top:10px;">
+          💡 小提示：关闭本页面即可自动回到聊天界面
+        </p>
       </div>
     </div>
 
@@ -467,12 +472,7 @@
       // 3. 绑定提交按钮
       document.getElementById('submit-btn').addEventListener('click', submitTest);
       
-      // 4. 绑定返回聊天
-      document.getElementById('back-chat').addEventListener('click', (e) => {
-        e.preventDefault();
-        const chatUrl = localStorage.getItem('dify_chat_url') || 'https://your-dify-chat.com';
-        window.open(chatUrl, '_blank');
-      });
+      // 4. 注意：已删除"返回聊天"按钮的事件监听（按钮直接使用javascript:window.close()）
     }
 
     // ========== 渲染题目 ==========
@@ -612,12 +612,7 @@
 
     // ========== 页面加载 ==========
     window.addEventListener('DOMContentLoaded', () => {
-      const chatUrl = new URLSearchParams(window.location.search).get('chat_url');
-      if (chatUrl) {
-        localStorage.setItem('dify_chat_url', chatUrl);
-        document.getElementById('back-chat').href = chatUrl;
-      }
-      
+      // 注意：已删除对"返回聊天"按钮的事件监听（按钮直接使用javascript:window.close()）
       init();
     });
   </script>
