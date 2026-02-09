@@ -470,7 +470,12 @@
       
       // 3. 绑定提交按钮
       document.getElementById('submit-btn').addEventListener('click', submitTest);
-      
+      // 4删除这段代码
+document.getElementById('back-chat').addEventListener('click', (e) => {
+  e.preventDefault();
+  const chatUrl = localStorage.getItem('dify_chat_url') || 'https://your-dify-chat.com';
+  window.open(chatUrl, '_blank');
+});
  
 
     // ========== 渲染题目 ==========
@@ -621,5 +626,6 @@
   </script>
 </body>
 </html>
+
 
 
